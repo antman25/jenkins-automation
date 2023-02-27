@@ -12,6 +12,14 @@ try {
     library identifier: "jenkins-shared-lib@main", retriever: modernSCM(sourceInfo)
 }
 
+String getPathPrefix(boolean isPriBranch, String rootPath, String branchName)
+{
+    def slugBranchName = utils.slugify(branchName)
+    if (isPriBranch == false)
+        return "/${rootPath}/${slugBranchName}"
+    return ""
+}
+
 podTemplates.pythonTemplate {
     node(POD_LABEL) {
         def params = [:]
