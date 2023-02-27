@@ -25,7 +25,7 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 }
 
 def createTenantFolder(String tenantKey, Map tenantConfig) {
-    def tenantVars = mergedConfig.get('vars')
+    def tenantVars = tenantConfig.get('vars')
     def folderPath = "${pathPrefix}/${tenantKey}"
     def tenantDisplayName = tenantVars.get('display_name')
 
