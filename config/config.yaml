@@ -2,3 +2,15 @@ tenants:
   common:
     vars:
       bitbucket_url: http://10.0.0.35
+  pipeline:
+    vars:
+      display_name: Pipeline
+  group-a:
+    vars:
+      display_name: Group A
+  group-b:
+    vars:
+      display_name: Group B
+  group-c:
+    vars:
+      display_name: Group C

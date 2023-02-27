@@ -58,17 +58,34 @@ def setTenantVar(config, tenant_name, var_key, var_value):
 def createCommon(config):
     setTenantVar(config, 'common', 'bitbucket_url', 'http://10.0.0.35')
 
+def templateTenant(tenant_name, project_list):
+    return { 'display_name' : tenant_name,
+             'project_list' : project_list
+            }
+
+def addTenant(config, tenant_name, project_list):
+    tenant_name_slug = slugify(tenant_name)
+    setConfig(config, tenant_name, KEY_VARS, 'display_name', tenant_name)
+
+def createTenants(config):
+    addTenant(config, TENANT_PIPELINE, ['PIP', 'PIPAPP'])
+    addTenant(config, TENANT_GROUP_A, ['prjA'])
+    addTenant(config, TENANT_GROUP_B, ['prjB'])
+    addTenant(config, TENANT_GROUP_C, ['prjA','prjB','prjC'])
+
+
 def main():
     try:
         output_path = 'config/config.yaml'
         output_config = {}
 
         createCommon(output_config)
+        createTenants(output_config)
 
         with open('config/config.yaml', 'w') as f:
             yaml.dump(output_config, f, Dumper=NoAliasDumper,sort_keys=False)
-    except:
-        print('Error building config')
+    except Exception as ex:
+        print('Exception: %s' % ex)
         sys.exit(1)
 
 
