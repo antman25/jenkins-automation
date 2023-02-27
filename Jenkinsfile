@@ -62,11 +62,10 @@ podTemplates.pythonTemplate {
                                'pathWorkspace' : env.WORKSPACE,
                                'urlTools' : env.TOOLS_URL,
                                'passwordBootstrap' : env.PASSWORD ]
-                    //'dsl/createTenantRoot.groovy'
+
                     jobDsl targets: [   'dsl/createTestingRoot.groovy',
-
-
-                                        ].join('\n'),
+                                        'dsl/createTenantRoot.groovy'
+                                    ].join('\n'),
                             removedJobAction: 'DELETE',
                             removedViewAction: 'DELETE',
                             lookupStrategy: 'JENKINS_ROOT',
