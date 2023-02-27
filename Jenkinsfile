@@ -55,7 +55,7 @@ podTemplates.pythonTemplate {
 
                     params = [ 'isPrimaryBranch' : isPrimaryBranch,
                                'rootJobTesting' : pathTestingRoot,
-                               'pathPrefix' : getPathPrefix(isPrimaryBranch, getPathPrefix, env.BRANCH_NAME),
+                               'pathPrefix' : getPathPrefix(isPrimaryBranch, pathTestingRoot, env.BRANCH_NAME),
                                'configYaml' : configYaml,
                                'branchName' : env.BRANCH_NAME,
                                'branchNameSlug' : utils.slugify(env.BRANCH_NAME),
