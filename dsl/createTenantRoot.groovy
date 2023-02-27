@@ -14,7 +14,9 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 
     // Build a list in the format jenkins expects for a permission matrix plugin. Ex: GROUP:<Jenkins Permission>:<Ldap Group>
     ldapRoleMap.each { curRoleName, curLdapGroup ->
+        println("Role: ${curRoleName} LdapGrp: ${curLdapGroup}")
         def jenkinsPermissionList = jenkinsRoleMap.get(curRoleName)
+        println("PermList: ${jenkinsPermissionList}")
         if (jenkinsPermissionList != null) {
             jenkinsPermissionList.each { curJenkinsPerm ->
                 result.add("GROUP:${curJenkinsPerm}:${curLdapGroup}")
@@ -33,7 +35,7 @@ def createTenantFolder(String tenantKey, Map tenantConfig) {
 
 
     List<String> permissionMatrix = buildPermissionMatrix(tenantRoles, tenantRoleLdapMap)
-
+    println("Permission Matrix: ${permissionMatrix}")
     folder(folderPath) {
         displayName(tenantDisplayName)
 
@@ -66,7 +68,7 @@ boolean main()
             tenants.each { tenantKey, tenantConfig ->
                 if (tenantKey != 'common') {
                     Map mergedConfig = mergeMaps(commonConfig, tenantConfig)
-                    println("Merged Config: ${mergedConfig}")
+                    //println("Merged Config: ${mergedConfig}")
                     createTenantFolder(tenantKey, mergedConfig)
                 }
             }
