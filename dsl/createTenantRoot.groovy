@@ -14,9 +14,7 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 
     // Build a list in the format jenkins expects for a permission matrix plugin. Ex: GROUP:<Jenkins Permission>:<Ldap Group>
     ldapRoleMap.each { curRoleName, curLdapGroup ->
-        println("Role: ${curRoleName} LdapGrp: ${curLdapGroup}")
         def jenkinsPermissionList = jenkinsRoleMap.get(curRoleName)
-        println("PermList: ${jenkinsPermissionList}")
         if (jenkinsPermissionList != null) {
             jenkinsPermissionList.each { curJenkinsPerm ->
                 result.add("GROUP:${curJenkinsPerm}:${curLdapGroup}")
@@ -29,13 +27,15 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 def createTenantFolder(String tenantKey, Map tenantConfig) {
     Map tenantVars = tenantConfig.get('vars')
     Map tenantRoles = tenantConfig.get('roles')
-    Map tenantRoleLdapMap = tenantConfig.get('role-ldap-map')
+    //Map tenantRoleLdapMap = tenantConfig.get('role-ldap-map')
     String folderPath = "${pathPrefix}/${tenantKey}"
     String tenantDisplayName = tenantVars.get('display_name')
 
 
-    List<String> permissionMatrix = buildPermissionMatrix(tenantRoles, tenantRoleLdapMap)
-    println("Permission Matrix: ${permissionMatrix}")
+    List<String> permissionMatrix = []
+
+
+
     folder(folderPath) {
         displayName(tenantDisplayName)
 
@@ -54,7 +54,6 @@ def createTenantFolder(String tenantKey, Map tenantConfig) {
             }
         }
     }
-
 }
 
 
