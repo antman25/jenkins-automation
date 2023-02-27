@@ -25,11 +25,11 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 }
 
 def createTenantFolder(String tenantKey, Map tenantConfig) {
-    def tenantVars = tenantConfig.get('vars')
-    def folderPath = "${pathPrefix}/${tenantKey}"
-    def tenantDisplayName = tenantVars.get('display_name')
+    Map tenantVars = tenantConfig.get('vars')
+    String folderPath = "${pathPrefix}/${tenantKey}"
+    String tenantDisplayName = tenantVars.get('display_name')
 
-    def permissionMatrix = []
+    List<String> permissionMatrix = []
     folder(folderPath) {
         displayName(tenantDisplayName)
 
@@ -42,7 +42,7 @@ def createTenantFolder(String tenantKey, Map tenantConfig) {
                 properties {
                     stringProperty {
                         key('TENANT')
-                        value('tenantKey')
+                        value(tenantKey)
                     }
                 }
             }

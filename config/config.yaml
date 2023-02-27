@@ -2,15 +2,53 @@ tenants:
   common:
     vars:
       bitbucket_url: http://10.0.0.35
+    roles:
+      read-only:
+      - hudson.model.Item.Read
+      developer:
+      - hudson.model.Item.Read
+      - hudson.model.Item.Build
+      - hudson.model.Item.Cancel
   pipeline:
     vars:
       display_name: Pipeline
+    builds:
+      display_name: Builds
+      project_list:
+      - PIP
+      - PIPAPP
+    role-ldap-map:
+      read-only: jenkins-ro-pipeline
+      developer: jenkins-dev-pipeline
   group-a:
     vars:
       display_name: Group A
+    builds:
+      display_name: Builds
+      project_list:
+      - prjA
+    role-ldap-map:
+      read-only: jenkins-ro-group-a
+      developer: jenkins-dev-group-a
   group-b:
     vars:
       display_name: Group B
+    builds:
+      display_name: Builds
+      project_list:
+      - prjB
+    role-ldap-map:
+      read-only: jenkins-ro-group-b
+      developer: jenkins-dev-group-b
   group-c:
     vars:
       display_name: Group C
+    builds:
+      display_name: Builds
+      project_list:
+      - prjA
+      - prjB
+      - prjC
+    role-ldap-map:
+      read-only: jenkins-ro-group-c
+      developer: jenkins-dev-group-c
