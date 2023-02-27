@@ -8,7 +8,7 @@ String slugify(String input) {
     //return input.toLowerCase().replaceAll("[^a-z0-9-]", "");
     def result =input.replaceAll(/[^\w\s-]/, '').trim().toLowerCase()
     println("First Replace: ${result}")
-    return input.replaceAll(/[-\s]+/, '-')
+    return result.replaceAll(/[-\s]+/, '-')
 }
 
 String isPrimaryBranch(String branchName) {
