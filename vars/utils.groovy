@@ -6,7 +6,7 @@
 
 String slugify(String input) {
     //return input.toLowerCase().replaceAll("[^a-z0-9-]", "");
-    def result = input.replaceAll('\/','-').toLowerCase()
+    def result = input.replaceAll('\\/','-').toLowerCase()
     println("First Replace: ${result}")
     result = result.replaceAll(/[^\w\s-]/, '')
     println("Second Replace: ${result}")
