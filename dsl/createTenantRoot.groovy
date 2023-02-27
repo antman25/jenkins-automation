@@ -32,7 +32,12 @@ def createTenantFolder(String tenantKey) {
 boolean main()
 {
     try {
-        createTenantFolder('test')
+        def tenants = configYaml.get('tenants')
+        if (tenants != null) {
+            tenants.each { tenantKey, tenantConfig ->
+
+            }
+        }
         /*boolean create_tenant_jobs_result = createTenantJobs()
 
         if (create_tenant_jobs_result == true) {
