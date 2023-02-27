@@ -26,6 +26,8 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
 
 def createTenantFolder(String tenantKey) {
     def folderPath = "${pathPrefix}/${tenantKey}"
+
+
 }
 
 
@@ -34,18 +36,14 @@ boolean main()
     try {
         def tenants = configYaml.get('tenants')
         if (tenants != null) {
-            tenants.each { tenantKey, tenantConfig ->
+            def commonConfig = tenants.get('common')
 
+            tenants.each { tenantKey, tenantConfig ->
+                Map mergedConfig = mergeMaps(commonConfig, tenantConfig)
+                println("Merged Config: ${mergedConfig}")
+                //createTenantFolder(tenantKey)
             }
         }
-        /*boolean create_tenant_jobs_result = createTenantJobs()
-
-        if (create_tenant_jobs_result == true) {
-            println("Create tenant jobs: SUCCESS")
-        } else {
-            println("Create tenant jobs: FAILURE")
-            return false
-        }*/
     } catch (Exception ex) {
         println("Exception: ${ex.toString()}")
         return false
