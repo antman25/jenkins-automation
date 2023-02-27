@@ -24,9 +24,14 @@ def buildPermissionMatrix(Map jenkinsRoleMap, Map ldapRoleMap) {
     return result
 }
 
-def createTenantFolder(String tenantKey) {
+def createTenantFolder(String tenantKey, Map tenantConfig) {
+    def tenantVars = mergedConfig.get('vars')
     def folderPath = "${pathPrefix}/${tenantKey}"
+    def tenantDisplayName = tenantVars.get('display_name')
 
+    folder(folderPath) {
+        displayName(tenantDisplayName)
+    }
 
 }
 
@@ -39,9 +44,11 @@ boolean main()
             def commonConfig = tenants.get('common')
 
             tenants.each { tenantKey, tenantConfig ->
-                Map mergedConfig = mergeMaps(commonConfig, tenantConfig)
-                println("Merged Config: ${mergedConfig}")
-                //createTenantFolder(tenantKey)
+                if (tenantKey != 'common') {
+                    Map mergedConfig = mergeMaps(commonConfig, tenantConfig)
+                    println("Merged Config: ${mergedConfig}")
+                    createTenantFolder(tenantKey, mergedConfig)
+                }
             }
         }
     } catch (Exception ex) {
