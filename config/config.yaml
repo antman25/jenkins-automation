@@ -1,0 +1,4 @@
+tenants:
+  common:
+    vars:
+      bitbucket_url: http://10.0.0.35

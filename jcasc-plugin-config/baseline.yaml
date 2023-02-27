@@ -1,0 +1,220 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              description: "Credentials used by Bitbucket plugin"
+              id: "bitbucket-plugin-cred"
+              password: not-real-password
+              scope: GLOBAL
+              username: "jenkins"
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    projectMatrix:
+      permissions:
+        - "GROUP:Overall/Read:authenticated"
+        - "USER:Overall/Administer:admin"
+        - "USER:Overall/Administer:antman"
+
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: true
+  disableRememberMe: false
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: "TOOLS_URL"
+            value: "https://github.com/antman25/jenkins-automation.git"
+          - key: "ARTIFACTORY_HOST"
+            value: "nexus.antlinux.local"
+          - key: "ARTIFACTORY_PORT"
+            value: "8443"
+
+  labelAtoms:
+    - name: "built-in"
+    - name: "jenkins-jenkins-agent"
+  markupFormatter: "plainText"
+  mode: EXCLUSIVE
+  myViewsTabBar: "standard"
+  noUsageStatistics: true
+  numExecutors: 0
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 10
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+        - id: "admin"
+          name: "Jenkins Admin"
+          properties:
+            - "apiToken"
+            - "mailer"
+            - "myView"
+            - preferredProvider:
+                providerId: "default"
+            - "timezone"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  envInject:
+    enableLoadingFromMaster: false
+    enablePermissions: false
+    hideInjectedVars: false
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "knownHostsFileVerificationStrategy"
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: -1
+  scriptApproval:
+    approvedSignatures:
+      - "method org.jenkinsci.plugins.workflow.support.actions.EnvironmentAction getEnvironment"
+      - "method org.yaml.snakeyaml.Yaml load java.lang.String"
+      - "new org.yaml.snakeyaml.Yaml"
+unclassified:
+  bitbucketEndpointConfiguration:
+    endpoints:
+      - bitbucketServerEndpoint:
+          bitbucketJenkinsRootUrl: "http://10.0.0.50:8080/"
+          credentialsId: "bitbucket-plugin-cred"
+          displayName: "Bitbucket Server"
+          manageHooks: true
+          serverUrl: "http://10.0.0.35"
+          webhookImplementation: NATIVE
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+  casCGlobalConfig:
+    configurationPath: "/tmp/baseline.yaml"
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  hashicorpVault:
+    configuration:
+      engineVersion: 2
+      timeout: 60
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://10.0.0.50:8080/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
+jobs:
+  - script: >
+      
+      
+      folder('seed-job') {
+        properties {
+          folderProperties {
+            properties {
+              stringProperty {
+                key('TENANT')
+                value("PIP")
+              }
+            }
+          }
+        }
+      }
+      
+      pipelineJob('seed-job/simple-test')
+      {
+        displayName("Test K8S Agent")
+        description("Simple test to exercise spinning up a k8s agent pod")
+        definition {
+          cpsFlowDefinition {
+
+              script("podTemplate { node(POD_LABEL) { stage('test') { sh 'echo test' } } }")
+              sandbox(true)
+          }
+        }
+      }
+      
+      multibranchPipelineJob("seed-job/github")
+      {
+          displayName("Deploy Jenkins Jobs - Github")
+          description("Delete this job when when the jenkins instance is bootstrapped")
+
+          branchSources {
+              branchSource {
+                  source {
+                      git {
+                          remote ('https://github.com/antman25/jenkins-automation.git')
+                          
+                          traits {
+                              gitBranchDiscovery()
+
+                              headRegexFilter {
+                                  regex('.*')
+                              }
+                          }
+                      }
+                  }
+                  strategy {
+                      allBranchesSame {
+                          props {
+                              suppressAutomaticTriggering {
+                                  triggeredBranchesRegex ('^(.*main).*$')
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+          orphanedItemStrategy {
+              discardOldItems {
+                  numToKeep(20)
+              }
+          }
+          factory {
+              workflowBranchProjectFactory {
+                  scriptPath('Jenkinsfile')
+              }
+          }
+      }
+   
