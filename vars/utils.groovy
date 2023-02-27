@@ -2,11 +2,7 @@
     def result =input.replaceAll(/[^\w\s-]/, '').trim().toLowerCase()
     return input.replaceAll(/[-\s]+/, '-')
 }*/
-import  java.util.regex
 
-private static final Pattern NONLATIN = Pattern.compile("[^\\w-]");
-private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
-private static final Pattern EDGESDHASHES = Pattern.compile("(^-|-\$)");
 
 String slugify(String input) {
     //return input.toLowerCase().replaceAll("[^a-z0-9-]", "");
