@@ -29,8 +29,24 @@ def createTenantFolder(String tenantKey, Map tenantConfig) {
     def folderPath = "${pathPrefix}/${tenantKey}"
     def tenantDisplayName = tenantVars.get('display_name')
 
+    def permissionMatrix = []
     folder(folderPath) {
         displayName(tenantDisplayName)
+
+        properties {
+            authorizationMatrix {
+                inheritanceStrategy { nonInheriting() }
+                permissions(permissionMatrix)
+            }
+            folderProperties {
+                properties {
+                    stringProperty {
+                        key('TENANT')
+                        value('tenantKey')
+                    }
+                }
+            }
+        }
     }
 
 }
